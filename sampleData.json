@@ -1,0 +1,14 @@
+{
+    "data": [
+        {
+            "name": "Megan Office",
+            "data": {},
+            "timestamp": "datetime.datetime(2018, 10, 24, 21, 15)"
+        },
+        {
+            "name": "Sunroom",
+            "data": {},
+            "timestamp": "datetime.datetime(2018, 10, 24, 21, 15)"
+        }
+    ]
+}
