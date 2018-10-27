@@ -14,8 +14,13 @@ app = Flask(__name__)
 
 atexit.register(lambda: scheduler.shutdown(wait=False))
 
+@app.route('/', methods=['GET'])
+def welcome():
+    return 'welcome!'
+
 @app.route('/', methods=['POST'])
 def receive_post():
+    print(request.headers)
     if request.json is None:
         return "Please Submit JSON", 400
     postJson = request.json

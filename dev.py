@@ -1,6 +1,11 @@
 import pickle
 from datetime import datetime, timedelta
 
+def cleanSlate():
+    newDataDict = { "data": []}
+    print(newDataDict)
+    saveData(newDataDict)
+
 def genSample():
     newDataDict = { "data": []}
     newData1 = {
