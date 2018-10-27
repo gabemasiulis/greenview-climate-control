@@ -19,9 +19,20 @@ def receive_post():
     if request.json is None:
         return "Please Submit JSON", 400
     postJson = request.json
-    updateData(postJson, openData())
+    if 'name' not in postJson:
+        return 'Must supply Sensor Name', 400
+    newPost = {'name': postJson['name']}
+    if 'data' not in postJson:
+        return 'Must supply cllimate data', 400
+    if 'temperature' not in postJson['data']:
+        return 'Must supply temperature in data object', 400
+    if 'humidity' not in postJson['data']:
+        return 'Must supply humidity in data object', 400
+    newData = {'temperature': postJson['data']['temperature'], 'humidity': postJson['data']['humidity']}
+    newPost['data'] = newData
+    updateData(newPost, openData())
     print(round_time_object(datetime.now()))
-    return 'received request'
+    return 'Created Entry', 201
 
 def saveData(obj):
     with open('./data/temp.pkl', 'wb') as f:
