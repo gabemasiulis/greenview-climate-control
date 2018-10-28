@@ -44,11 +44,29 @@ def receive_post():
         return 'Must supply temperature in data object', 400
     if 'humidity' not in postJson['data']:
         return 'Must supply humidity in data object', 400
+    devices = getDevices()
+    if postJson['name'] not in devices:
+        addDevice(postJson['name'])
+        return 'Submit data only from recognized devices', 400
+    if devices[postJson['name']]['isRegistered'] == False:
+        return 'Submit data only from registered devices', 400
     newData = {'temperature': postJson['data']['temperature'], 'humidity': postJson['data']['humidity']}
     newPost['data'] = newData
     updateData(newPost, openData())
     print(round_time_object(datetime.now()))
     return 'Created Entry', 201
+
+def addDevice(name):
+    devices = getDevices()
+    devices[name] = {
+        'displayName': name,
+        'isRegistered': False
+    }
+    with open('./data/devices.pkl', 'wb') as f:
+        pickle.dump(devices, f, pickle.HIGHEST_PROTOCOL)
+def getDevices():
+    with open('./data/devices.pkl','rb') as f:
+        return pickle.load(f)
 
 def saveData(obj):
     with open('./data/temp.pkl', 'wb') as f:
@@ -83,6 +101,3 @@ def round_time_object(timeObject):
     newTimeObject = datetime(timeObject.year, timeObject.month, timeObject.day, newHours, newMinutes)
     return newTimeObject
 
-def getRecognizedDevices():
-    with open('./data/devices.pkl','rb') as f:
-        return pickle.load(f)
