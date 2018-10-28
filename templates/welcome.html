@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Greenview Climate Control</title>
+</head>
+<body>
+    <h1>Greenview Climate Control</h1>
+    <table>
+        <tr>
+            <th>Sensor Name</th>
+            <th>Reading Timestamp</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+        </tr>
+        {% for entry in data %}
+            <tr>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.timestamp }}</td>
+                <td>{{ entry.data.temperature }}</td>
+                <td>{{ entry.data.humidity }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

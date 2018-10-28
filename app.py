@@ -1,6 +1,6 @@
 import atexit, pickle
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, request
+from flask import Flask, request, render_template
 from datetime import datetime, timedelta
 
 scheduler = BackgroundScheduler()
@@ -16,7 +16,8 @@ atexit.register(lambda: scheduler.shutdown(wait=False))
 
 @app.route('/', methods=['GET'])
 def welcome():
-    return 'welcome!'
+    data = openData()
+    return render_template('welcome.html', data=data['data'])
 
 @app.route('/', methods=['POST'])
 def receive_post():
