@@ -14,6 +14,7 @@
             <th>Reading Timestamp</th>
             <th>Temperature</th>
             <th>Humidity</th>
+            <th>Delete Entry</th>
         </tr>
         {% for entry in data %}
             <tr>
@@ -21,6 +22,7 @@
                 <td>{{ entry.timestamp }}</td>
                 <td>{{ entry.data.temperature }}</td>
                 <td>{{ entry.data.humidity }}</td>
+                <td><a href="delete/{{ data.index(entry) }}">Delete</a></td>
             </tr>
         {% endfor %}
     </table>

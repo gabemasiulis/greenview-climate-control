@@ -9,3 +9,9 @@ that are placed strategically in a home, to record temperature differentials.
 4. Install necessary pip packages `pip3 install -r requirements.txt`
 5. Define flask's environment variable `export FLASK_APP=app.py`
 6. `flask run`
+
+### Next Steps
+render graph of temperatures per room
+fetch data from Nest API
+implement authentication
+recognize devices

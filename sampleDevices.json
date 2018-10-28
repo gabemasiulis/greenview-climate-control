@@ -1,0 +1,10 @@
+{
+    "nodeMCUSunroom": {
+        "displayName": "Sunroom",
+        "isRegistered": true
+    },
+    "nodeMCUMeganOffice": {
+        "displayName": "Megan's Office",
+        "isRegistered": true
+    }
+}

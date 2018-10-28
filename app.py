@@ -1,6 +1,6 @@
 import atexit, pickle
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from datetime import datetime, timedelta
 
 scheduler = BackgroundScheduler()
@@ -13,6 +13,16 @@ scheduler.start()
 app = Flask(__name__)
 
 atexit.register(lambda: scheduler.shutdown(wait=False))
+
+@app.route('/delete/')
+@app.route('/delete/<index>')
+def delete(index=None):
+    if index == None:
+        return redirect(url_for('welcome'))
+    data = openData()
+    del data['data'][int(index)]
+    saveData(data)
+    return redirect(url_for('welcome'))
 
 @app.route('/', methods=['GET'])
 def welcome():
@@ -72,3 +82,7 @@ def round_time_object(timeObject):
         newMinutes = 0
     newTimeObject = datetime(timeObject.year, timeObject.month, timeObject.day, newHours, newMinutes)
     return newTimeObject
+
+def getRecognizedDevices():
+    with open('./data/devices.pkl','rb') as f:
+        return pickle.load(f)
