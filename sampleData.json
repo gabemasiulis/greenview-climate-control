@@ -2,12 +2,18 @@
     "data": [
         {
             "name": "Megan Office",
-            "data": {},
+            "data": {
+                "temperature": "70.00",
+                "humidity": "25.00"
+            },
             "timestamp": "datetime.datetime(2018, 10, 24, 21, 15)"
         },
         {
             "name": "Sunroom",
-            "data": {},
+            "data": {
+                "temperature": "70.00",
+                "humidity": "25.00"
+            },
             "timestamp": "datetime.datetime(2018, 10, 24, 21, 15)"
         }
     ]
