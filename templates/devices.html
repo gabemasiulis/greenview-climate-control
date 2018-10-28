@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Greenview Climate Control | Device Management</title>
+</head>
+<body>
+    <h1>GCC Device Management</h1>
+    <p><strong>Changes are saved automatically</strong></p>
+    <script>
+        function patchDevice(deviceName, field, id){
+            value = document.getElementById(id).value;
+            if (field === 'isRegistered'){
+                value = JSON.parse(document.getElementById(id).checked);
+            }
+            const patchUrl = window.location.href;
+            const patchData = {
+                'deviceName': deviceName,
+                'field': field,
+                'value': value
+            }
+            const patchParams = {
+                headers: {
+                    'content-type':'application/json'
+                },
+                body: JSON.stringify(patchData),
+                method: 'PATCH'
+            }
+            fetch(patchUrl, patchParams)
+                .catch(error=>{console.log(error)});
+        }
+    </script>
+    {% for key, value in devices.items() %}
+        <div>
+            <h3>{{ key }}</h3>
+            <span>Display Name: <textarea cols="20" rows="1" id='{{ key }}displayName' onkeyup="patchDevice('{{ key }}', 'displayName', '{{ key }}displayName')">{{ value['displayName'] }}</textarea></span>
+            <span>Registered: <input type="checkbox" id='{{ key }}isRegistered' {% if value['isRegistered'] %}checked{% endif %} onchange="patchDevice('{{ key }}', 'isRegistered', '{{ key }}isRegistered')"></span>
+        </div>
+    {% endfor %}
+    
+</body>
+</html>

@@ -8,7 +8,7 @@ scheduler = BackgroundScheduler()
 def job_function():
     data = openData()
     print(data)
-scheduler.add_job(job_function, 'cron', second='*/15')
+scheduler.add_job(job_function, 'cron', second='*/30')
 scheduler.start()
 app = Flask(__name__)
 
@@ -55,6 +55,42 @@ def receive_post():
     updateData(newPost, openData())
     print(round_time_object(datetime.now()))
     return 'Created Entry', 201
+
+@app.route('/devices/', methods=['GET'])
+def manageDevices():
+    devices = getDevices()
+    return render_template('devices.html', devices=devices)
+
+@app.route('/devices/', methods=['PATCH'])
+def updateDevice():
+    if request.json is None:
+        return "Please Submit JSON", 400
+    devices = getDevices()
+    patchJson = request.json
+    if 'deviceName' not in patchJson:
+        return 'Must Supply Device Name', 400
+    deviceName = patchJson['deviceName']
+    if deviceName not in devices:
+        return 'Must Supply a Pre-Existing Device', 400
+    if 'field' not in patchJson:
+        return 'Must Supply a Field to Update', 400
+    if 'value' not in patchJson:
+        return 'Must Supply a Value to Update', 400
+    if patchJson['field'] == 'displayName':
+        if type(patchJson['value']) != str:
+            return 'Incorrect value type', 400
+        devices[deviceName]['displayName'] = patchJson['value']
+        with open('./data/devices.pkl', 'wb') as f:
+            pickle.dump(devices, f, pickle.HIGHEST_PROTOCOL)
+            return 'Record Updated', 200
+    if patchJson['field'] == 'isRegistered':
+        if type(patchJson['value']) != bool:
+            return 'Incorrect value type', 400
+        devices[deviceName]['isRegistered'] = patchJson['value']
+        with open('./data/devices.pkl', 'wb') as f:
+            pickle.dump(devices, f, pickle.HIGHEST_PROTOCOL)
+            return 'Record Updated', 200
+    return 'Must Supply an Existing Field to Update', 400
 
 def addDevice(name):
     devices = getDevices()
