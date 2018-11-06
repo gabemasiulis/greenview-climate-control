@@ -67,5 +67,5 @@ void loop() {
     return;
   }
   WiFi.disconnect();
-  delay(10000); // defines time between the end of a read interval, and the start of the next
+  delay(900000); // defines time between the end of a read interval, and the start of the next
 }

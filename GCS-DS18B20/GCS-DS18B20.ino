@@ -1,3 +1,8 @@
+/**
+ * Greenview Climate Sensor will collect temperature and humidity data and send it to a flask server.
+ * Connects to wifi once every 15 minutes, sends data, disconnects.
+ **/
+
 #include <DallasTemperature.h>
 #include <OneWire.h>
 #include <ArduinoJson.h>
@@ -61,5 +66,5 @@ void loop(void) {
         return;
     }
     WiFi.disconnect();
-    delay(10000); // defines time between the end of a read interval, and the start of the next
+    delay(900000); // defines time between the end of a read interval, and the start of the next
 }
