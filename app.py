@@ -39,18 +39,20 @@ def receive_post():
         return 'Must supply Sensor Name', 400
     newPost = {'name': postJson['name']}
     if 'data' not in postJson:
-        return 'Must supply cllimate data', 400
+        return 'Must supply climate data', 400
     if 'temperature' not in postJson['data']:
         return 'Must supply temperature in data object', 400
-    if 'humidity' not in postJson['data']:
-        return 'Must supply humidity in data object', 400
+    # if 'humidity' not in postJson['data']:
+    #     return 'Must supply humidity in data object', 400
     devices = getDevices()
     if postJson['name'] not in devices:
         addDevice(postJson['name'])
         return 'Submit data only from recognized devices', 400
     if devices[postJson['name']]['isRegistered'] == False:
         return 'Submit data only from registered devices', 400
-    newData = {'temperature': postJson['data']['temperature'], 'humidity': postJson['data']['humidity']}
+    newData = {'temperature': postJson['data']['temperature']}
+    if 'humidity' in postJson['data']:
+        newData['humidity'] = postJson['data']['humidity']
     newPost['data'] = newData
     updateData(newPost, openData())
     print(round_time_object(datetime.now()))
