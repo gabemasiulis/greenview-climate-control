@@ -1,4 +1,5 @@
-import atexit, pickle
+import atexit, pickle, json
+from wtforms import Form, StringField, validators
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, render_template, redirect, url_for
 from datetime import datetime, timedelta
@@ -13,6 +14,20 @@ scheduler.start()
 app = Flask(__name__)
 
 atexit.register(lambda: scheduler.shutdown(wait=False))
+
+class AuthorizationForm(Form):
+    pin = StringField('Nest Pin', [validators.Length(min=8, max=8)])
+
+@app.route('/authorize', methods=['GET', 'POST'])
+def process_authorization_request():
+    nestConfig = load_configuration()
+    authUrl = nestConfig['nest-authorization-url']
+    form = AuthorizationForm(request.form)
+    if request.method == 'POST' and form.validate():
+        pin = form.pin.data
+        print(pin)
+        # post_nest_authorization_request(pin)
+    return render_template('process_authorization_request.html', form=form, authUrl=authUrl)
 
 @app.route('/delete/')
 @app.route('/delete/<index>')
@@ -42,8 +57,6 @@ def receive_post():
         return 'Must supply climate data', 400
     if 'temperature' not in postJson['data']:
         return 'Must supply temperature in data object', 400
-    # if 'humidity' not in postJson['data']:
-    #     return 'Must supply humidity in data object', 400
     devices = getDevices()
     if postJson['name'] not in devices:
         addDevice(postJson['name'])
@@ -53,6 +66,7 @@ def receive_post():
     newData = {'temperature': postJson['data']['temperature']}
     if 'humidity' in postJson['data']:
         newData['humidity'] = postJson['data']['humidity']
+        # TODO warn about missing humidity data
     newPost['data'] = newData
     updateData(newPost, openData())
     print(round_time_object(datetime.now()))
@@ -140,3 +154,8 @@ def round_time_object(timeObject):
     newTimeObject = datetime(timeObject.year, timeObject.month, timeObject.day, newHours, newMinutes)
     return newTimeObject
 
+def load_configuration():
+    with open('config.json') as configJson:
+        config = json.load(configJson)
+        configJson.close()
+        return config

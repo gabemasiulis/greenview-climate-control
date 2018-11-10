@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Greenview Climate Control | Nest Authorization</title>
+</head>
+<body>
+    <h1>GCC Nest Authorization</h1>
+    <p>Please proceed to <a href='{{ authUrl }}'>this link</a> and allow us to access your Nest account. Copy the 8 character pin and enter it in the form below.</p>
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+    <dl>
+        {{ render_field(form.pin) }}
+    </dl>
+    <p><input type=submit value=Register>
+    </form>
+</body>
+</html>
