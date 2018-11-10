@@ -118,9 +118,9 @@ def updateData(newObj, data):
     print(data)   
     timestampNow = round_time_object(datetime.now())
     '''
-    Remove data entries that are greater than 24 hours
+    Remove data entries that are greater than 96 hours
     '''
-    newData = list(filter(lambda entry: (timestampNow - timedelta(days=1) < entry['timestamp']), data['data']))
+    newData = list(filter(lambda entry: (timestampNow - timedelta(days=4) < entry['timestamp']), data['data']))
     data['data'] = newData
     newObj['timestamp'] = timestampNow
     data['data'].append(newObj)
