@@ -1,4 +1,5 @@
 import atexit, pickle, json, requests
+from pathlib import Path
 from wtforms import Form, StringField, validators
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, render_template, redirect, url_for, flash
@@ -15,7 +16,7 @@ def load_configuration():
 def job_function():
     data = openData()
     print(data)
-scheduler.add_job(job_function, 'cron', second='*/30')
+scheduler.add_job(job_function, 'cron', hour='*/20') # TODO change to a sane value 
 scheduler.start()
 app = Flask(__name__)
 app.secret_key = load_configuration()['flask-secret-key']
@@ -125,14 +126,23 @@ def addDevice(name):
     with open('./data/devices.pkl', 'wb') as f:
         pickle.dump(devices, f, pickle.HIGHEST_PROTOCOL)
 def getDevices():
-    with open('./data/devices.pkl','rb') as f:
+    filePath = Path('./data/devices.pkl')
+    if Path(filePath).is_file == False:
+        obj = {}
+        with open(filePath, 'wb') as f:
+            pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+    with open(filePath,'rb') as f:
         return pickle.load(f)
 
 def saveData(obj):
     with open('./data/temp.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 def openData():
-    with open('./data/temp.pkl', 'rb') as f:
+    filePath = './data/temp.pkl'
+    if Path(filePath).is_file == False:
+        import dev
+        dev.genSample()
+    with open(filePath, 'rb') as f:
         return pickle.load(f)
 
 def updateData(newObj, data):
