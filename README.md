@@ -1,6 +1,6 @@
 # Greenview Climate Control
 ### Introduction
-An app that consists of a central Flask server that receives data from nodeMCU/DHT11 powered sensors
+An app that consists of a central Flask server that receives data from nodeMCU and DHT11, DHT22 or DS18B-20 powered sensors
 that are placed strategically in a home, to record temperature differentials.
 ### Development
 1. Clone this repository
@@ -12,6 +12,9 @@ that are placed strategically in a home, to record temperature differentials.
 
 ### Next Steps
 render graph of temperatures per room
+
 fetch data from Nest API
+
 implement authentication
+
 recognize devices
