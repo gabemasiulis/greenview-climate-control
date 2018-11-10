@@ -1,10 +1,16 @@
-import atexit, pickle, json
+import atexit, pickle, json, requests
 from wtforms import Form, StringField, validators
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, flash
 from datetime import datetime, timedelta
 
 scheduler = BackgroundScheduler()
+
+def load_configuration():
+    with open('config.json') as configJson:
+        config = json.load(configJson)
+        configJson.close()
+        return config
 
 def job_function():
     data = openData()
@@ -12,6 +18,7 @@ def job_function():
 scheduler.add_job(job_function, 'cron', second='*/30')
 scheduler.start()
 app = Flask(__name__)
+app.secret_key = load_configuration()['flask-secret-key']
 
 atexit.register(lambda: scheduler.shutdown(wait=False))
 
@@ -21,12 +28,13 @@ class AuthorizationForm(Form):
 @app.route('/authorize', methods=['GET', 'POST'])
 def process_authorization_request():
     nestConfig = load_configuration()
+    # testNestConnection(nestConfig) TODO finish this, if nest auth is good, redirect to another page
     authUrl = nestConfig['nest-authorization-url']
     form = AuthorizationForm(request.form)
     if request.method == 'POST' and form.validate():
         pin = form.pin.data
         print(pin)
-        # post_nest_authorization_request(pin)
+        post_nest_authorization_request(pin, nestConfig) # TODO what happens next...
     return render_template('process_authorization_request.html', form=form, authUrl=authUrl)
 
 @app.route('/delete/')
@@ -154,8 +162,23 @@ def round_time_object(timeObject):
     newTimeObject = datetime(timeObject.year, timeObject.month, timeObject.day, newHours, newMinutes)
     return newTimeObject
 
-def load_configuration():
-    with open('config.json') as configJson:
-        config = json.load(configJson)
-        configJson.close()
-        return config
+def post_nest_authorization_request(pin, nestConfig):
+    nestTokenUrl = 'https://api.home.nest.com/oauth2/access_token'
+    payload = {
+        'client_id': nestConfig['nest-client-id'],
+        'client_secret': nestConfig['nest-client-secret'],
+        'grant_type': 'authorization_code',
+        'code': pin
+    }
+    r = requests.post(nestTokenUrl, data=payload)
+    print(r.encoding)
+    print(r.text)
+    if r.status_code == 400:
+        flash('Nest Token Generation Error: ' + json.loads(r.text)['error_description'])
+        return 'Nest Token Generation Error: ' + json.loads(r.text)['error_description']
+    flash('Authorized!')
+    
+
+def testNestConnection(nestConfig):
+    clientId = nestConfig['nest-client-id']
+    clientSecret = ['nest-client-secret']

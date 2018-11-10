@@ -2,5 +2,6 @@
     "nest-client-id": "client id goes here",
     "nest-client-secret": "client secret goes here",
     "nest-authorization-url": "nest authorization url goes here",
-    "darksky-secret-key": "Dark Sky API secret key goes here"
+    "darksky-secret-key": "Dark Sky API secret key goes here",
+    "flask-secret-key": "Secret Key for Flask goes here"
 }

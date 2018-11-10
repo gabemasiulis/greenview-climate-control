@@ -9,12 +9,13 @@
 <body>
     <h1>GCC Nest Authorization</h1>
     <p>Please proceed to <a href='{{ authUrl }}'>this link</a> and allow us to access your Nest account. Copy the 8 character pin and enter it in the form below.</p>
-    {% from "_formhelpers.html" import render_field %}
+    {% from "_helpers.html" import render_field, render_flash %}
     <form method=post>
     <dl>
         {{ render_field(form.pin) }}
     </dl>
-    <p><input type=submit value=Register>
+    {{ render_flash() }}
+    <p><input type=submit value=Register></p>
     </form>
 </body>
 </html>
